@@ -1,0 +1,32 @@
+#include <math.h>
+#include <Wire.h>
+#include "rgb_lcd.h"
+int a; //thermistor value
+float c;
+int b = 3985;      //b value of the thermistor
+float resistance;
+
+const int colorR = 0;
+const int colorG = 0;
+const int colorB = 255;
+
+rgb_lcd lcd;
+
+void setup(){
+  lcd.begin(16, 2);
+  lcd.setRGB(colorR, colorG, colorB);
+}
+
+void loop(){
+  a = analogRead(0); //find the original reading of the thermistor
+  resistance = (float)(1023 - a) * 10000 / a; //get the resistance of the sensor;
+  c = 1 / (log(resistance / 10000) / b + 1 / 298.15) - 273.15; //convert to Celsius via datasheet&nbsp;;
+  int f = (c*(9/5)+32);//convert to F (delete if you want C)
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("temperature is:");
+  lcd.setCursor(0,1);
+  lcd.print(f);//print the F temp on the lcd screen (change to: lcd.print(c); if you want C)
+  lcd.print("f");//change to lcd.print("c"); if you want C
+  delay(1000);//wait 1 second
+}
